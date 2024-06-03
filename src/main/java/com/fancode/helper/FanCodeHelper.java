@@ -72,12 +72,23 @@ public class FanCodeHelper {
      * @param userIds  A list of city users.
      * @return         A map containing the counts of completed and incompleted todos for each user.
      */
-    public static Map<Integer, Map<ToDoStatus, Integer>> getCityUserToDoStatusCount(List<ToDos> userToDo, Set<Integer> userIds) {
+    private static Map<Integer, Map<ToDoStatus, Integer>> groupAndCountToDos(List<ToDos> userToDo, Set<Integer> userIds) {
         return userToDo.stream()
-                .filter(user -> userIds.contains(user.getUserId()))
+                .filter(todo -> userIds == null || userIds.contains(todo.getUserId()))
                 .collect(Collectors.groupingBy(ToDos::getUserId,
                         Collectors.groupingBy(todo ->
-                                todo.getCompleted() ? ToDoStatus.COMPLETE : ToDoStatus.INCOMPLETE, Collectors.summingInt(todo -> 1))));
+                                        todo.getCompleted() ? ToDoStatus.COMPLETE : ToDoStatus.INCOMPLETE,
+                                Collectors.summingInt(todo -> 1))));
+    }
+
+    // Method to get ToDo status count for specific users
+    public static Map<Integer, Map<ToDoStatus, Integer>> getCityUserToDoStatusCount(List<ToDos> userToDo, Set<Integer> userIds) {
+        return groupAndCountToDos(userToDo, userIds);
+    }
+
+    // Method to get ToDo status count for all users
+    public static Map<Integer, Map<ToDoStatus, Integer>> getUserToDoStatusCount(List<ToDos> userToDo) {
+        return groupAndCountToDos(userToDo, null);
     }
 
     /**

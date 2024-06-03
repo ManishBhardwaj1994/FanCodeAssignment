@@ -6,10 +6,19 @@ import io.restassured.response.Response;
 import org.testng.Assert;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.fancode.constant.StatusCode.OK;
 import static com.fancode.helper.GsonHelper.getGson;
 
 public class ResponseHelper {
 
+    /**
+     * Returns a list of objects from the response.
+     * @param response The response object.
+     * @param clazz    The class of the object.
+     * @param <T>      The type of the object.
+     * @return         A list of objects.
+     */
     private static <T> List<T> getResponse(Response response, Class<T[]> clazz) {
         if (response == null) {
             return null;
@@ -17,13 +26,23 @@ public class ResponseHelper {
         return Arrays.asList(getGson().fromJson(response.getBody().asString(), clazz));
     }
 
+    /**
+     * Returns a list of ToDos from the response.
+     * @param response The response object.
+     * @return         A list of ToDos.
+     */
     public static List<ToDos> getToDosResponse(Response response) {
-        Assert.assertEquals(response.getStatusCode(), 200, "Failed to fetch users");
+        Assert.assertEquals(response.getStatusCode(), OK.getStatusCode(), "Failed to fetch users");
         return getResponse(response, ToDos[].class);
     }
 
+    /**
+     * Returns a list of users from the response.
+     * @param response The response object.
+     * @return         A list of users.
+     */
     public static List<Users> getUsersResponse(Response response) {
-        Assert.assertEquals(response.getStatusCode(), 200, "Failed to fetch ToDo List");
+        Assert.assertEquals(response.getStatusCode(), OK.getStatusCode(), "Failed to fetch ToDo List");
         return getResponse(response, Users[].class);
     }
 }
